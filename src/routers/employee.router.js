@@ -9,6 +9,7 @@ import {
 
 const router = express.Router();
 
+
 router.post('/', createEmpleado);
 router.get('/', getEmpleados);
 router.get('/departamento/:codigo', getEmpleadosByDepartamento);
