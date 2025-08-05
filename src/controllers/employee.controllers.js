@@ -1,10 +1,11 @@
+// src/controllers/employee.controllers.js
 import Department from "../models/department.model.js";
 import Employee from "../models/employee.model.js";
 
 // Crear un nuevo empleado
 export const createEmpleado = async (req, res) => {
   try {
-    const empleado = new Empleado(req.body);
+    const empleado = new Employee(req.body);
     await empleado.save();
     res.status(201).json(empleado);
   } catch (error) {
@@ -15,7 +16,7 @@ export const createEmpleado = async (req, res) => {
 // Obtener todos los empleados
 export const getEmpleados = async (req, res) => {
   try {
-    const empleados = await Empleado.find();
+    const empleados = await Employee.find();
     res.json(empleados);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -25,28 +26,39 @@ export const getEmpleados = async (req, res) => {
 // Obtener un empleado por nombre
 export const getEmpleadoPorNombre = async (req, res) => {
   try {
-    // El nombre del empleado se obtiene de los parámetros de la URL
     const { nombre } = req.params;
-    // Buscamos un empleado en la base de datos que coincida con el nombre
-    const empleado = await Empleado.findOne({ nombre: nombre });
+    const empleado = await Employee.findOne({ nombre: nombre });
 
-    // Si no se encuentra el empleado, respondemos con un error 404
     if (!empleado) {
       return res.status(404).json({ error: 'Empleado no encontrado por nombre' });
     }
-
-    // Si se encuentra, respondemos con los datos del empleado
     res.json(empleado);
   } catch (error) {
-    // Manejamos cualquier error del servidor o de la base de datos
     res.status(500).json({ error: error.message });
+  }
+};
+
+// Obtener empleados por dep artamento
+export const getEmpleadosByDepartamento = async (req, res) => {
+  try {
+    const codigoDepartamento = parseInt(req.params.codigo);
+
+    if (isNaN(codigoDepartamento)) {
+      return res.status(400).json({ message: 'El código de departamento no es válido.' });
+    }
+
+    const empleados = await Employee.find({ codigo_departamento: codigoDepartamento });
+
+    res.status(200).json(empleados);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 // Actualizar un empleado por código
 export const updateEmpleado = async (req, res) => {
   try {
-    const empleado = await Empleado.findOneAndUpdate({ codigo: req.params.codigo }, req.body, { new: true });
+    const empleado = await Employee.findOneAndUpdate({ codigo: req.params.codigo }, req.body, { new: true });
     if (!empleado) {
       return res.status(404).json({ error: 'Empleado no encontrado' });
     }
@@ -59,7 +71,7 @@ export const updateEmpleado = async (req, res) => {
 // Eliminar un empleado por código
 export const deleteEmpleado = async (req, res) => {
   try {
-    const empleado = await Empleado.findOneAndDelete({ codigo: req.params.codigo });
+    const empleado = await Employee.findOneAndDelete({ codigo: req.params.codigo });
     if (!empleado) {
       return res.status(404).json({ error: 'Empleado no encontrado' });
     }
@@ -68,6 +80,8 @@ export const deleteEmpleado = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Esta función parece ser un duplicado, pero la mantengo como la tenías.
 export const obtenerEmpleadoPorNombre = async (req, res) => {
   try {
     const { name } = req.params;

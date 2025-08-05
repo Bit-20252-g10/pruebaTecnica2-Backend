@@ -3,13 +3,15 @@ import {
   createEmpleado,
   getEmpleados,
   updateEmpleado,
-  deleteEmpleado
+  deleteEmpleado,
+  getEmpleadosByDepartamento
 } from '../controllers/employee.controllers.js';
 
 const router = express.Router();
 
 router.post('/', createEmpleado);
 router.get('/', getEmpleados);
+router.get('/departamento/:codigo', getEmpleadosByDepartamento);
 router.put('/:codigo', updateEmpleado);
 router.delete('/:codigo', deleteEmpleado);
 
